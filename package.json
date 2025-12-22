@@ -1,0 +1,21 @@
+{
+  "name": "backend-project",
+  "version": "1.0.0",
+  "description": "Project management web app",
+  "keywords": [
+    "backend",
+    "git",
+    "API",
+    "database"
+  ],
+  "license": "ISC",
+  "author": "Raihan  Shaikh",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "devDependencies": {
+    "prettier": "3.7.4"
+  }
+}
