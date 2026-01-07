@@ -1,5 +1,6 @@
 import mongoose, {Schema} from "mongoose";
 import bcrypt from "bcrypt";
+import crypto from "crypto"
 
 const userSchema = new Schema({
     avatar:{
@@ -76,4 +77,43 @@ userSchema.pre("save", async function (next) {
         return await bcrypt.compare(password, this.password)
     })
 
+//creating JWT tokens acess and refresh tokens by installing npm lib jasonwebtokens
+
+userSchema.methods.generateAcessTokens = function(){
+    return jwt.sign({
+        _id: this._id,
+        email: this.email,
+        username: this.username
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN
+    }
+    )
+}
+userSchema.methods.generateRefreshTokens = function(){
+     return jwt.sign({
+        _id: this._id,
+       
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+        expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN
+    }
+    )
+}
+//generating temporary tokens
+
+userSchema.methods.generateTemporayTokens = function () {
+    const unhashedTokens = crypto.randomBytes(20).toString("hex")
+
+    const hashedTOkens = crypto.
+    createHash("sha256")
+    .update(unhashedTokens)
+    .digest("hex")
+
+    const tokenExpiry = Date.now() + (20*60*1000) //20mins
+
+    return {unhashedTokens, hashedTOkens, tokenExpiry}
+}
 export const user = mongoose.model("User", userSchema)
