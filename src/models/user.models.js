@@ -62,20 +62,24 @@ const userSchema = new Schema({
 timeStamps:true
 }
 )
-
-userSchema.pre("save", async function (next) {
+/*userSchema.pre("save", async function (next) {
     if(!this.isModified("password")) return next() //this condition make sure that the password is only encrypted when it is modified or user entering for the first time
-    await bcrypt.hash(this.password, 10)
+    this.password = await bcrypt.hash(this.password, 10)
      // you define what u want to encrypt and for how many rounds of hashing here we use 10
     next()
     })
-
+*/
+userSchema.pre("save", async function () {
+    console.log("PRE SAVE RUNNING")
+    if (!this.isModified("password")) return
+    this.password = await bcrypt.hash(this.password, 10)
+})
 
     //checking if the enterd password is correct while loging in
 
-    userSchema.methods.isPasswordCorrect(async function (password) {
+    userSchema.methods.isPasswordCorrect = async function (password) {
         return await bcrypt.compare(password, this.password)
-    })
+    }
 
 //creating JWT tokens acess and refresh tokens by installing npm lib jasonwebtokens
 
@@ -116,4 +120,4 @@ userSchema.methods.generateTemporayTokens = function () {
 
     return {unhashedTokens, hashedTOkens, tokenExpiry}
 }
-export const user = mongoose.model("User", userSchema)
+export const User = mongoose.model("User", userSchema)

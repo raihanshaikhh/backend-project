@@ -16,10 +16,11 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
 }))
-
+//importing routes
 import  healthCheckRouter  from './routes/healthcheck.route.js'
-
+import authRouter from "./routes/authUser.route.js"
 app.use("/api/v1/healthcheck", healthCheckRouter)
+app.use("/api/v1/auth", authRouter)
 
 ///api/v1/healthcheck is also known as home route
 

@@ -46,45 +46,43 @@ EMAIL_SMTP_PASSWORD=d663b2db238efd*/
 
 
 
-const emailVerificationTemplate = (username, verificationUrl)=>{
-return{ 
-    body: {
-        name: username,
-        intro: 'Welcome to project manager! we\'re  excited to have you onboard',
-        action:{
-            instructions: 'To get started with Mailgen, please click here:',
-            button: {
-                color: '#22BC66', // Optional action button color
-                text: 'Verify email',
-                link: verificationUrl
+const emailVerificationTemplate = (username, verificationUrl) => {
+    return {
+        body: {
+            name: username,
+            intro: "Welcome to Project Manager! We're excited to have you onboard.",
+            action: {
+                instructions: "Click the button below to verify your email:",
+                button: {
+                    color: "#22BC66",
+                    text: "Verify Email",
+                    link: verificationUrl
+                }
+            },
+            outro: "Need help or have questions? Just reply to this email, we'd love to help."
         }
-
     }
-},
-outro:'Need help, or have questions? Just reply to this email, we\'d love to help.'
-   
-}
 }
 
-const passwordResetTemplate = (username, resetPasswordUrl)=>{
-return{ 
-    body: {
-        name: username,
-        intro: 'You have received this email because a password reset request for your account was received.',
-        action:{
-            instructions: 'Click the button below to reset your password:',
-            button: {
-                color: '#22BC66', // Optional action button color
-                text: 'Reset Your Password Now',
-                link: resetPasswordUrl
+
+const passwordResetTemplate = (username, resetPasswordUrl) => {
+    return {
+        body: {
+            name: username,
+            intro: "You requested a password reset for your account.",
+            action: {
+                instructions: "Click the button below to reset your password:",
+                button: {
+                    color: "#22BC66",
+                    text: "Reset Your Password",
+                    link: resetPasswordUrl
+                }
+            },
+            outro: "If you did not request this, you can safely ignore this email."
         }
-
     }
-},
-        outro: 'If you did not request a password reset, no further action is required on your part.'
-   
 }
-}
+
 
 
 export{
