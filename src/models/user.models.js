@@ -1,6 +1,8 @@
 import mongoose, {Schema} from "mongoose";
 import bcrypt from "bcrypt";
 import crypto from "crypto"
+import jwt from "jsonwebtoken";
+
 
 const userSchema = new Schema({
     avatar:{

@@ -19,7 +19,8 @@ const generateAccessAndRefreshTokens = async (userId) => {
 
         return { accessToken, refreshToken }
     } catch (error) {
-        throw new ApiError(500, "Cannot generate tokens")
+        console.error("TOKEN ERROR:", error);
+        throw new ApiError(500, "failed to genrate generate tokens")
     }
 }
 
@@ -79,8 +80,64 @@ return res.status(201)
 )
 
 })
+
+
+const loginUser = asyncHandler(async (req, res)=>{
+ const{email, username ,password}= req.body
+
+ if(!email){
+    throw new ApiError(402,"Email or USername is Required")
+ }
+
+ //if user already exist
+
+ const user = await User.findOne({email})  //finding by email
+
+ if(!user){
+    throw new ApiError(401,"user does not exist")
+ }
+
+ //if user existed checking password
+
+ const isPasswordValid = await user.isPasswordCorrect(password)
+
+ if(!isPasswordValid){
+    throw new ApiError(403,"invalid password")
+ }
+console.log("User ID:", user._id);
+console.log("Has methods:",
+  typeof user.generateAccessTokens,
+  typeof user.generateRefreshTokens
+);
+
+const {accessToken, refreshToken}= await generateAccessAndRefreshTokens(user._id)
+const loggedInUser =await User.findById(user._id).select(
+    "-password -refreshToken -emailVerificationToken -emailVerificationTokenExpiry"
+)
+    //creating cookies
+
+    const options={
+        httpOnly:true,
+        secure:process.env.NODE_ENV === "production"
+    }
+    return res.status(200).cookie("accessToken", accessToken,options).cookie("refreshtoken", refreshToken, options).json(
+        new ApiResponse(200,{
+            user:loggedInUser,
+            accessToken,
+            refreshToken
+        },
+            "user logged in succesfully")
+    )
+
+
+})
+
+
+
+
+
 export {
-    userRegister
+    userRegister, loginUser
 }
 
 
