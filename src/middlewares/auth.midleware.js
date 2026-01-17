@@ -7,9 +7,9 @@ to check that its a verified accesstoken
 import jwt from "jsonwebtoken";
 import{ ApiError }from "../utils/api-error.js";
 import {User} from "../models/user.models.js"
-import { asyncHandler } from "../utils/asyn-handler.js"
+import  asyncHandler  from "../utils/asyn-handler.js"
 
-export const verifyJWT =asyncHandler (async (req, res, next)=>{
+export const verifyJWT = asyncHandler (async (req, res, next)=>{
     const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ","")
 
     if(!token){

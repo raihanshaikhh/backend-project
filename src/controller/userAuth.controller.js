@@ -120,7 +120,10 @@ const loggedInUser =await User.findById(user._id).select(
         httpOnly:true,
         secure:process.env.NODE_ENV === "production"
     }
-    return res.status(200).cookie("accessToken", accessToken,options).cookie("refreshtoken", refreshToken, options).json(
+    return res.status(200)
+    .cookie("accessToken", accessToken,options)
+    .cookie("refreshtoken", refreshToken, options)
+    .json(
         new ApiResponse(200,{
             user:loggedInUser,
             accessToken,
@@ -132,12 +135,38 @@ const loggedInUser =await User.findById(user._id).select(
 
 })
 
+//loggin out user
 
+const logOut = asyncHandler(async(req, res)=>{
+    
+    await User.findByIdAndUpdate(req.user._id,{
+        $set:{
+            refreshToken:""
+        },
+        
+    },
+    {
+        new:true
+    }
+)
+
+const options ={
+    httpOnly:true,
+    secure:true
+}
+return res.status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshtoken", options)
+    .json(
+        new ApiResponse(200,{},"user loggedout succesfully")
+    )
+
+})
 
 
 
 export {
-    userRegister, loginUser
+    userRegister, loginUser, logOut
 }
 
 
