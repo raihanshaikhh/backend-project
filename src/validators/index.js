@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-export const userRegistorValidator = ()=>{
+ const userRegistorValidator = ()=>{
     return [
     body("email")
       .trim()
@@ -25,7 +25,7 @@ export const userRegistorValidator = ()=>{
   ];
 }
 
-export const loginUserValidator=()=>{
+ const loginUserValidator=()=>{
     return [
         body("email")
         .optional()
@@ -37,4 +37,19 @@ export const loginUserValidator=()=>{
       
 
     ]
+}
+
+
+
+
+
+
+
+
+export{
+  userRegistorValidator,
+  loginUserValidator,
+  userChangePasswordValidator,
+  userForgotPasswordValidator,
+  userResetForgotPasswordValidator
 }
