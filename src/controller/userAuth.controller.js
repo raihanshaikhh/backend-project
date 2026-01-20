@@ -4,7 +4,9 @@ import { ApiError } from "../utils/api-error.js"
 import { ApiResponse } from "../utils/api-response.js"
 import asyncHandler from "../utils/asyn-handler.js"
 import { emailSend, emailVerificationTemplate } from "../utils/mail.js"
-import jwt from "jasonwebtoken"
+import jwt from "jsonwebtoken"
+import { passwordResetTemplate } from "../utils/mail.js"
+import crypto from "crypto"
 
 
 
@@ -166,7 +168,7 @@ const logOut = asyncHandler(async (req, res) => {
 
 // getting current user 
 
-const currenUser = asyncHandler(async (req, res) => {
+const currentUser = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
@@ -280,7 +282,7 @@ const refreshAccessToken = asyncHandler(async (req, res)=>{
 const forgotPasswordRequest = asyncHandler(async(req, res)=>{
     const {email}  = req.body
 
-    const user = user.findOne({email})
+    const user = await User.findOne({email})
 
     if (!user){
         throw new ApiError(404,"user does not exist",[])
@@ -307,7 +309,7 @@ const forgotPasswordRequest = asyncHandler(async(req, res)=>{
 
 
 })
-
+//resetForgot Password
 const resetForgotPassword = asyncHandler(async(req, res)=>{
     const {resetToken} = req.params
     const {newPassword} = req.body
@@ -315,11 +317,11 @@ const resetForgotPassword = asyncHandler(async(req, res)=>{
     let hashedToken = crypto
     .createHash("sha256")
     .update(resetToken).digest("hex")
-
+console.log("before db query");
     const user = await User.findOne({
         ForogotPasswordToken: hashedToken,
         ForogotPasswordTokenExpiry: {$gt: Date.now()}})
-
+console.log("after db query");
         if(!user){
             throw new ApiError(402,"token invalid or expired")
 
@@ -331,7 +333,7 @@ const resetForgotPassword = asyncHandler(async(req, res)=>{
         user.password = newPassword
 
         await user.save({validateBeforeSave: false})
-
+   
         return res.status(200).json(new ApiResponse(200,{},"password reset succesfully"))
 
 })
@@ -359,7 +361,7 @@ const changePassword = asyncHandler(async(req, res)=>{
 
 
 export {
-    userRegister, loginUser, logOut, currenUser, verifyEmail, resendEmail, refreshAccessToken, forgotPasswordRequest,changePassword, resetForgotPassword
+    userRegister, loginUser, logOut, currentUser, verifyEmail, resendEmail, refreshAccessToken, forgotPasswordRequest,changePassword, resetForgotPassword
 }
 
 
