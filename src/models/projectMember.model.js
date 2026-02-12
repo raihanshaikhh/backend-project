@@ -1,13 +1,14 @@
 import mongoose, {Schema} from "mongoose";
-import { AvailableRolesEnum } from "../utils/costants.js";
+import { AvailableRolesEnum, USerRolesEnum } from "../utils/costants.js";
 
 
 const projectMember =new Schema ({
     user:{
-        type:String,
+        type:Schema.Types.ObjectId,
+        ref:"User",
         required:true,
         trim:true,
-        unique:true,
+
     },
     project: {
       type: mongoose.Schema.Types.ObjectId,
@@ -17,7 +18,7 @@ const projectMember =new Schema ({
     role:{
         type:String,
         enum:AvailableRolesEnum,
-        default:"member",
+        default:USerRolesEnum.MEMBER,
     },
 
 
