@@ -7,6 +7,7 @@ to check that its a verified accesstoken
 import jwt from "jsonwebtoken"
 import { ApiError } from "../utils/api-error.js"
 import { User } from "../models/user.models.js"
+import {ProjectMember} from "../models/projectMember.model.js"
 import asyncHandler from "../utils/asyn-handler.js"
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
@@ -39,3 +40,28 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
     throw new ApiError(401, "invalid accesstoken")
   }
 })
+
+export const validateProjectPermission = (roles = [])=>{
+  asyncHandler(async(req, res,next)=>{
+    const {projectId} = req.params;
+    if (!projectId) {
+    throw new ApiError(401, "project id is missing")
+  }
+  const project = await ProjectMember.findOne({
+  project: new mongoose.Types.ObjectId(projectId),
+  user: new mongoose.Types.ObjectId(req.userId)
+  })
+  if (!project) {
+    throw new ApiError(401, "project not found")
+  }
+  const givenRole = project?.role
+
+  req.user.role = givenRole
+  roles.includes(givenRole)
+
+  if(!roles.includes(givenRole)){
+    throw new ApiError(401, "you do not have permission")
+  }
+  next()
+  })
+}
