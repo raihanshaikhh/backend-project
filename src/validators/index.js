@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-
+import {AvailableRolesEnum} from "../utils/costants.js"
  const userRegistorValidator = ()=>{
     return [
     body("email")
@@ -59,7 +59,28 @@ const userResetForgotPasswordValidator = ()=>{
   ]
 }
 
+const createProjectValidator = ()=>{
+  return [
+    body("name").notEmpty().withMessage("name is required"),
+    body("description").optional(),
+  ]
+}
 
+const addMembertoprojectValidator = ()=>{
+  return [
+    body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Email is invalid"),
+    body("role")
+    .notEmpty()
+    .withMessage("Role is Required")
+    .isIn(AvailableRolesEnum)
+    .withMessage("role is invalid")
+  ] 
+}
 
 
 
@@ -71,5 +92,8 @@ export{
   loginUserValidator,
   userChangePasswordValidator,
   userForgotPasswordValidator,
-  userResetForgotPasswordValidator
+  userResetForgotPasswordValidator,
+  createProjectValidator,
+  addMembertoprojectValidator
+  
 }
