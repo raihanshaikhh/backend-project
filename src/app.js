@@ -21,8 +21,11 @@ app.use(cors({
 //importing routes
 import  healthCheckRouter  from './routes/healthcheck.route.js'
 import authRouter from "./routes/authUser.route.js"
+import projectRouter from "./routes/projects.routes.js"
 app.use("/api/v1/healthcheck", healthCheckRouter)
 app.use("/api/v1/auth", authRouter)
+app.use("/api/v1/projects", projectRouter)
+
 
 ///api/v1/healthcheck is also known as home route
 

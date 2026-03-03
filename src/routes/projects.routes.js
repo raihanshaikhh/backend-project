@@ -1,0 +1,42 @@
+import { Router } from "express";
+import {getProject,
+    getProjectById,
+    getProjectMembers,
+    createProject,
+    updateProject,
+    deleteProject,
+    addMembersToProject,
+    updateMemberRole,
+    deleteMember} from "../controller/project.controller.js"
+import { validate } from "../middlewares/vlidators.middleware.js";
+import { createProjectValidator, addMembertoprojectValidator } from "../validators/index.js";
+import {verifyJWT,validateProjectPermission} from "../middlewares/auth.midleware.js"
+import { AvailableRolesEnum, USerRolesEnum } from "../utils/costants.js";
+
+const router = Router()
+
+router.use(verifyJWT)
+
+router.route("/").get(getProject).post(createProjectValidator(), validate, createProject)
+
+router.route("/:projectId")
+.get(validateProjectPermission(AvailableRolesEnum), getProjectById)
+.put(validateProjectPermission([USerRolesEnum.ADMIN]),createProjectValidator(), updateProject)
+.delete(validateProjectPermission([USerRolesEnum.ADMIN]), deleteProject)
+
+router
+.route("/:projectId/members")
+.get(getProjectMembers)
+.post(validateProjectPermission([USerRolesEnum.ADMIN]),
+validate,
+addMembersToProject
+)
+router
+.route("/:projectId/members/:userId")
+.put(validateProjectPermission([USerRolesEnum.ADMIN]), updateMemberRole)
+.delete(validateProjectPermission([USerRolesEnum.ADMIN]),deleteMember)
+
+
+
+
+export default router;
