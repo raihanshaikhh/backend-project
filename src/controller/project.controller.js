@@ -105,7 +105,7 @@ const updateProject = asyncHandler(async (req, res) => {
     if (!project) {
         throw new ApiError(404, "Project not found")
     }
-    return res.status(200).json(new ApiResponse(201, project, "Project Updated Succesfully "))
+    return res.status(200).json(new ApiResponse(200, project, "Project Updated Succesfully "))
 
 
 })
