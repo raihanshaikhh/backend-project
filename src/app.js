@@ -25,7 +25,9 @@ import projectRouter from "./routes/projects.routes.js"
 app.use("/api/v1/healthcheck", healthCheckRouter)
 app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/projects", projectRouter)
+import taskRoutes from "./routes/task.route.js"
 
+app.use("/api/v1", taskRoutes)
 
 ///api/v1/healthcheck is also known as home route
 

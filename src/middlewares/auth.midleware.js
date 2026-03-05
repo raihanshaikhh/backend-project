@@ -9,7 +9,7 @@ import { ApiError } from "../utils/api-error.js"
 import { User } from "../models/user.models.js"
 import {ProjectMember} from "../models/projectMember.model.js"
 import asyncHandler from "../utils/asyn-handler.js"
-
+import mongoose from "mongoose"
 export const verifyJWT = asyncHandler(async (req, res, next) => {
   const authHeader = req.headers.authorization
   const token =
@@ -41,27 +41,32 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
   }
 })
 
-export const validateProjectPermission = (roles = [])=>{
-  asyncHandler(async(req, res,next)=>{
-    const {projectId} = req.params;
+export const validateProjectPermission = (roles = []) => {
+  return asyncHandler(async (req, res, next) => {
+
+    const { projectId } = req.params;
+
     if (!projectId) {
-    throw new ApiError(401, "project id is missing")
-  }
-  const project = await ProjectMember.findOne({
-  project: new mongoose.Types.ObjectId(projectId),
-  user: new mongoose.Types.ObjectId(req.userId)
-  })
-  if (!project) {
-    throw new ApiError(401, "project not found")
-  }
-  const givenRole = project?.role
+      throw new ApiError(400, "project id is missing");
+    }
 
-  req.user.role = givenRole
-  roles.includes(givenRole)
+    const projectMember = await ProjectMember.findOne({
+      project: new mongoose.Types.ObjectId(projectId),
+      user: new mongoose.Types.ObjectId(req.userId)
+    });
 
-  if(!roles.includes(givenRole)){
-    throw new ApiError(401, "you do not have permission")
-  }
-  next()
-  })
-}
+    if (!projectMember) {
+      throw new ApiError(404, "project not found for this user");
+    }
+
+    const givenRole = projectMember.role;
+
+    req.userRole = givenRole;
+
+    if (roles.length && !roles.includes(givenRole)) {
+      throw new ApiError(403, "you do not have permission");
+    }
+
+    next();
+  });
+};

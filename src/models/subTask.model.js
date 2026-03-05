@@ -1,4 +1,5 @@
 import mongoose, {Schema} from "mongoose";
+import {AvailableTaskStatus} from "../utils/costants.js"
 
 
 const subTaskSchema = new Schema({
@@ -14,12 +15,13 @@ task: {
     },
     status: {
       type: String,
-      enum: AvailableTaskStatusEnum,
+      enum: AvailableTaskStatus,
       default: "todo",
     },
-  isCompleted:{
-    boolean:false
-  }
+  isCompleted: {
+  type: Boolean,
+  default: false
+}
 
 
 
